@@ -7,7 +7,7 @@ import (
 	"github.com/fentec-project/gofe/data"
 	"github.com/fentec-project/gofe/sample"
 	
-	"psa/prf"
+	"github.com/johanernst/khPRF-PSA/prf"
 )
 
 type PSAClient struct {
