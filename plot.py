@@ -1,3 +1,5 @@
+#This script creates plots from the output of the benchmarks
+
 from matplotlib import pyplot as plt
 import sys
 import numpy as np

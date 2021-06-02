@@ -98,8 +98,63 @@ func TestRuntime(t *testing.T) {
     fmt.Println("total encrytion (nano sec.):", int64(runtime_enc))
 	fmt.Println("total decrytion (nano sec.):", int64(runtime_dec))
 	
-	_, err3 := file.WriteString(fmt.Sprintf("%d;%d;%d;%d\n", num_clients, runtime_enc, runtime_dec, runtime_setup))   //qqq
+	_, err3 := file.WriteString(fmt.Sprintf("%d;%d;%d;%d\n", num_clients, runtime_enc, runtime_dec, runtime_setup))
     if err3 != nil {
         fmt.Println(err)
+    }
+}
+
+func TestDemo(t *testing.T) {
+    num_clients := 2000
+    clients := make([]*PSAClient, num_clients)
+    ciphertexts := make([]*big.Int, num_clients)
+    label := 0
+  
+    fmt.Printf("Executing setup for %v clients.\n", num_clients)
+    for i := 0; i < num_clients; i++ {
+        new_client, err := NewPSAClient(i)
+        
+        if err != nil {
+            fmt.Println(err)
+        }
+        clients[i] = new_client
+    }
+    //compute decryption key
+    dec_key := data.NewConstantVector(Dimension, big.NewInt(0))
+    for i := 0; i < num_clients; i++ {
+      dec_key = dec_key.Add(clients[i].ClientEncKey)
+    }
+    dec_key = dec_key.Mod(key_mod)
+    
+    plaintexts, err := data.NewRandomVector(num_clients, sample.NewUniform(big.NewInt(int64(max_value))))
+    if err != nil {
+        fmt.Println(err)
+    }
+    
+    fmt.Printf("Encrypting %v messages.\n", num_clients)
+    for i := 0; i < num_clients; i++ {
+        ciphertexts[i], err = clients[i].Encrypt(plaintexts[i], strconv.Itoa(label), num_clients)
+        if err != nil {
+            fmt.Println(err)
+        }
+    }
+    
+    sum_plaintexts := big.NewInt(0)
+    for i := 0; i < num_clients; i++ {
+        sum_plaintexts.Add(sum_plaintexts, plaintexts[i])
+    }
+    fmt.Printf("Sum of plaintexts is %v.\n", sum_plaintexts)
+
+    fmt.Println("Decrypting ciphertexts.")
+    dec_value, err2 := PSADecrypt(ciphertexts, dec_key, strconv.Itoa(label), num_clients)
+    if err2 != nil {
+        fmt.Println(err)
+    }
+    
+    fmt.Printf("Decrypted value:     %v.\n", dec_value)
+    if dec_value.Cmp(sum_plaintexts) != 0 {
+        fmt.Println("ALERT: decryption != sum of plaintexts")
+        fmt.Println(dec_value)
+        fmt.Println(sum_plaintexts)
     }
 }
