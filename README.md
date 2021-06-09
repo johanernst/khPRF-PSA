@@ -1,6 +1,6 @@
 # Implementation of PSA scheme using key-homomorphic PRFs.
 
-## How to run the code
+## How to download and run the code
 1. Install Go
 2. Clone repository
 3. Download dependencies
@@ -30,3 +30,10 @@ The benchmark program contains quite many pauses to avoid that processor overhea
 
 ### Create the plots
 When you executed `./benchmark.sh` there will be a file \"runtime.txt\". This file contains the benchmark results. Executing `python3 plot.py` will create plots and print exact running times (and standard deviation) for 1000, 5000 and 10000 users.
+
+## How to run the code by using Vagrant
+1. Install and set up [Vagrant](https://www.vagrantup.com/)
+2. Clone this git repository or download the \"vagrant\" folder.
+3. Run `vagrant up` inside the vagrant folder.
+4. Run `vagrant ssh` to get into the vagrant VM.
+5. Type `cd khPRF-PSA` and then `go test -run=TestDemo`.
