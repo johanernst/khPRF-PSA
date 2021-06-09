@@ -5,6 +5,7 @@
 2. Clone repository
 3. Download dependencies
 4. Run test code
+5. (Create the plots)
 
 ### Install Go
 Follow these [instructions](https://golang.org/doc/install) to download and install Go.
@@ -25,3 +26,7 @@ We use gofe/data mainly for the vector datatypes and gofe/sample to create rando
 Run in a terminal
 `./benchmark.sh` to run the performance test, or
 `go test -run=TestDemo` for a short demo.
+The benchmark program contains quite many pauses to avoid that processor overheating influences the results. Therefore running `./benchmark.sh` will take several hours. Feel free to reduce the pauses or the number of iterations in \"benchmark.sh\" and \"psa_test.go\".
+
+### Create the plots
+When you executed `./benchmark.sh` there will be a file \"runtime.txt\". This file contains the benchmark results. Executing `python3 plot.py` will create plots and print exact running times (and standard deviation) for 1000, 5000 and 10000 users.

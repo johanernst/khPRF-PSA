@@ -3,7 +3,11 @@
 from matplotlib import pyplot as plt
 import sys
 import numpy as np
+from os.path import exists
 
+#This function creates plots from the running-time measurements.
+#The format of the files is:
+# Number of clients;Total time spend for encryption in ns;Total time spend for decryption in ns; Total time spend for setup in ns
 def plot():
     #This is the number of test-runs that are contained in the input file.
     runs_per_file = 1
@@ -12,27 +16,39 @@ def plot():
     if len(sys.argv) == 3:
         runs_per_file = int(sys.argv[1])
         lines_per_run = int(sys.argv[2])
-
+        
+    if len(sys.argv) == 2:
+        runs_per_file = int(sys.argv[1])
+        
+        
+    file1 = open('runtime.txt', 'r')
+    Lines1 = file1.readlines()
+    if len(sys.argv) == 1:
+        runs_per_file = len(Lines1) // lines_per_run
+    
+    lass_file_exists = exists('runtime_lass.txt')
+    if lass_file_exists:
+        file2 = open('runtime_lass.txt', 'r')
+        Lines2 = file2.readlines()
+    else:   #fill Lines2 with one-entries (reduces case distinctions) (we will not print a plot in this case)
+        Lines2 = ['1;1;1;1\n'] * lines_per_run * runs_per_file
+        
+    assert(len(Lines1) == lines_per_run * runs_per_file)
+    assert(len(Lines2) == lines_per_run * runs_per_file)
+        
+    # these are the arrays for our scheme
     num_clients1 = [0] * lines_per_run
     runtime_enc1 = [0] * lines_per_run
     runtime_dec1 = [0] * lines_per_run
     runtime_setup1 = [0] * lines_per_run
     
+    # these are the arrays for the LaSS scheme
     num_clients2 = [0] * lines_per_run
     runtime_enc2 = [0] * lines_per_run
     runtime_dec2 = [0] * lines_per_run
     runtime_setup2 = [0] * lines_per_run
 
-    file1 = open('runtime.txt', 'r')
-    file2 = open('runtime_lass.txt', 'r')
-    Lines1 = file1.readlines()[1:]
-    Lines2 = file2.readlines()[1:]
-    
-    assert len(Lines1) == runs_per_file * lines_per_run
-    assert len(Lines2) == runs_per_file * lines_per_run
-
     #numpy part for computing the errors
-
     array1 = [[[0 for columns in range(4)] for rows in range(lines_per_run)] for stuff in range(runs_per_file)]
     array2 = [[[0 for columns in range(4)] for rows in range(lines_per_run)] for stuff in range(runs_per_file)]
     
@@ -163,11 +179,12 @@ def plot():
     plt.plot(num_clients1, runtime_dec1, 'gs', label='Decryption (Our scheme)')
     plt.errorbar(num_clients1, runtime_dec1, yerr = np_error_dec_1, fmt='gs')
     plt.plot(num_clients1, runtime_enc2, 'b-')
-    plt.plot(num_clients1, runtime_enc2, 'bd', label='Encryption (LaSS)')
-    plt.errorbar(num_clients1, runtime_enc2, yerr = np_error_enc_2, fmt='bd')
-    plt.plot(num_clients1, runtime_dec2, 'c-')
-    plt.plot(num_clients1, runtime_dec2, 'c^', label='Decryption (LaSS)')
-    plt.errorbar(num_clients1, runtime_dec2, yerr = np_error_dec_2, fmt='c^')
+    if lass_file_exists:
+        plt.plot(num_clients1, runtime_enc2, 'bd', label='Encryption (LaSS)')
+        plt.errorbar(num_clients1, runtime_enc2, yerr = np_error_enc_2, fmt='bd')
+        plt.plot(num_clients1, runtime_dec2, 'c-')
+        plt.plot(num_clients1, runtime_dec2, 'c^', label='Decryption (LaSS)')
+        plt.errorbar(num_clients1, runtime_dec2, yerr = np_error_dec_2, fmt='c^')
     
     plt.legend(loc=0)
     plt.xlabel("Number of clients")
@@ -179,9 +196,11 @@ def plot():
     plt.plot(num_clients1, runtime_setup1, 'g-')
     plt.plot(num_clients1, runtime_setup1, 'go', label='Setup (Our scheme)')
     plt.errorbar(num_clients1, runtime_setup1, yerr = np_error_setup_1, fmt='go')
-    plt.plot(num_clients1, runtime_setup2, 'b-')
-    plt.plot(num_clients1, runtime_setup2, 'bd', label='Setup (LaSS)')
-    plt.errorbar(num_clients1, runtime_setup2, yerr = np_error_setup_2, fmt='bd')
+    if lass_file_exists:
+        plt.plot(num_clients1, runtime_setup2, 'b-')
+        plt.plot(num_clients1, runtime_setup2, 'bd', label='Setup (LaSS)')
+        plt.errorbar(num_clients1, runtime_setup2, yerr = np_error_setup_2, fmt='bd')
+    
     plt.legend(loc=0)
     plt.xlabel("Number of clients")
     plt.ylabel("Running time in seconds")
@@ -195,12 +214,13 @@ def plot():
     print("Running time decryption 1000 users (our scheme):  " + str(runtime_dec1[0]) + " standard deviation: " + str(np_error_dec_1[0]))
     print("Running time decryption 5000 users (our scheme):  " + str(runtime_dec1[4]) + " standard deviation: " + str(np_error_dec_1[4]))
     print("Running time decryption 10000 users (our scheme): " + str(runtime_dec1[9]) + " standard deviation: " + str(np_error_dec_1[9]))
-    print("Running time encryption 1000 users (LaSS):  " + str(runtime_enc2[0]) + " standard deviation: " + str(np_error_enc_2[0]))
-    print("Running time encryption 5000 users (LaSS):  " + str(runtime_enc2[4]) + " standard deviation: " + str(np_error_enc_2[4]))
-    print("Running time encryption 10000 users (LaSS): " + str(runtime_enc2[9]) + " standard deviation: " + str(np_error_enc_2[9]))
-    print("Running time decryption 1000 users (LaSS):  " + str(runtime_dec2[0]) + " standard deviation: " + str(np_error_dec_2[0]))
-    print("Running time decryption 5000 users (LaSS):  " + str(runtime_dec2[4]) + " standard deviation: " + str(np_error_dec_2[4]))
-    print("Running time decryption 10000 users (LaSS): " + str(runtime_dec2[9]) + " standard deviation: " + str(np_error_dec_2[9]))
+    if lass_file_exists:
+        print("Running time encryption 1000 users (LaSS):  " + str(runtime_enc2[0]) + " standard deviation: " + str(np_error_enc_2[0]))
+        print("Running time encryption 5000 users (LaSS):  " + str(runtime_enc2[4]) + " standard deviation: " + str(np_error_enc_2[4]))
+        print("Running time encryption 10000 users (LaSS): " + str(runtime_enc2[9]) + " standard deviation: " + str(np_error_enc_2[9]))
+        print("Running time decryption 1000 users (LaSS):  " + str(runtime_dec2[0]) + " standard deviation: " + str(np_error_dec_2[0]))
+        print("Running time decryption 5000 users (LaSS):  " + str(runtime_dec2[4]) + " standard deviation: " + str(np_error_dec_2[4]))
+        print("Running time decryption 10000 users (LaSS): " + str(runtime_dec2[9]) + " standard deviation: " + str(np_error_dec_2[9]))
     
     
     
