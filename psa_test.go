@@ -27,7 +27,7 @@ func TestRuntime(t *testing.T) {
     clients := make([]*PSAClient, num_clients)
     ciphertexts := make([]*big.Int, num_clients)
     
-    file, err := os.OpenFile("runtime.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+    file, err := os.OpenFile("data/runtime.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
     if err != nil {
         fmt.Println(err)
     }

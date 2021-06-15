@@ -21,14 +21,14 @@ def plot():
         runs_per_file = int(sys.argv[1])
         
         
-    file1 = open('runtime.txt', 'r')
+    file1 = open('data/runtime.txt', 'r')
     Lines1 = file1.readlines()
     if len(sys.argv) == 1:
         runs_per_file = len(Lines1) // lines_per_run
     
-    lass_file_exists = exists('runtime_lass.txt')
+    lass_file_exists = exists('data/runtime_lass.txt')
     if lass_file_exists:
-        file2 = open('runtime_lass.txt', 'r')
+        file2 = open('data/runtime_lass.txt', 'r')
         Lines2 = file2.readlines()
     else:   #fill Lines2 with one-entries (reduces case distinctions) (we will not print a plot in this case)
         Lines2 = ['1;1;1;1\n'] * lines_per_run * runs_per_file

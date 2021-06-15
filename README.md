@@ -29,7 +29,9 @@ Run in a terminal
 The benchmark program contains quite many pauses to avoid that processor overheating influences the results. Therefore running `./benchmark.sh` will take several hours. Feel free to reduce the pauses or the number of iterations in \"benchmark.sh\" and \"psa_test.go\".
 
 ### Create the plots
-When you executed `./benchmark.sh` there will be a file \"runtime.txt\". This file contains the benchmark results. Executing `python3 plot.py` will create plots and print exact running times (and standard deviation) for 1000, 5000 and 10000 users.
+In the \"data\" folder there are the files \"runtime.txt\" and \"runtime_lass.txt\" which contain the results of the performance tests of our scheme and LaSS respectively. Executing `python3 plot.py` will create the same plots as in our paper and print exact running times (and standard deviation) for 1000, 5000 and 10000 users.
+Executing `./benchmark.sh` will run the benchmark and append the result to \"runtime.txt\".
+The python script will look for both \"runtime.txt\" and \"runtime_lass.txt\". If both are present, they must have the same length. If you run your own performance tests, its best to delete or rename both \"runtime.txt\" and \"runtime_lass.txt\" and then execute `./benchmark.sh`.
 
 ## How to run the code by using Vagrant
 1. Install and set up [Vagrant](https://www.vagrantup.com/)
