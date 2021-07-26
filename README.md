@@ -50,8 +50,9 @@ For running the benchmark inside the vagrant VM the system should have 16GB of R
 4. Run `vagrant ssh` to get into the vagrant VM.
 5. Type `cd khPRF-PSA` and then `go test -run=TestDemo`.
 
-In case you are having problems with `vagrant up`, [this stackoverflow](https://stackoverflow.com/questions/60350358/how-do-i-resolve-the-character-device-dev-vboxdrv-does-not-exist-error-in-ubu) thread might help. These are the commands that helped in my case (with VirtualBox already installed):
-1. `sudo apt-get install virtualbox-dkms`
-2. `sudo apt install --reinstall linux-headers-$(uname -r) virtualbox-dkms dkms`
-3. `sudo dpkg-reconfigure virtualbox-dkms`
-4. `sudo dpkg-reconfigure virtualbox`
+In case you are having problems with `vagrant up`, [this stackoverflow thread](https://stackoverflow.com/questions/60350358/how-do-i-resolve-the-character-device-dev-vboxdrv-does-not-exist-error-in-ubu) might help. These are the commands that helped in my case (with VirtualBox already installed):
+1. `sudo apt-get update`
+2. `sudo apt-get install virtualbox-dkms`
+3. `sudo apt install --reinstall linux-headers-$(uname -r) virtualbox-dkms dkms`
+4. `sudo dpkg-reconfigure virtualbox-dkms`
+5. `sudo dpkg-reconfigure virtualbox`
